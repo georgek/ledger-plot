@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from itertools import groupby
 from typing import List
 
+import click
 import matplotlib.pyplot as plt
 from matplotlib import dates as mdates
 from matplotlib import ticker
@@ -26,31 +27,9 @@ def parse_events(event_file):
     return [Event(**item) for item in data]
 
 
-def valid_date(string):
-    try:
-        return datetime.strptime(string, "%Y-%m-%d")
-    except ValueError:
-        raise argparse.ArgumentTypeError(f"Not a valid date: {string}")
-
-
 def date_to_value(dates: List[date], values: List[float], date: date) -> float:
     position = bisect_left(dates, date)
     return values[position]
-
-
-def get_args():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description="Plot ledger output",
-    )
-    parser.add_argument("-t", "--title", type=str)
-    parser.add_argument("--xmin", type=valid_date)
-    parser.add_argument("--xmax", type=valid_date)
-    parser.add_argument("--ymin", type=float)
-    parser.add_argument("--ymax", type=float)
-    parser.add_argument("-e", "--event_file", type=argparse.FileType("r"))
-
-    return parser.parse_args()
 
 
 def add_event_grid(ax, dates: List[date], values: List[float], events: List[Event]):
@@ -101,7 +80,16 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
             offset += offset_amount
 
 
+@click.command(help="Plot ledger data")
+@click.option("-t", "--title")
+@click.option("--xmin", type=click.DateTime(formats=["%Y-%m-%d"]))
+@click.option("--xmax", type=click.DateTime(formats=["%Y-%m-%d"]))
+@click.option("--ymin", type=float)
+@click.option("--ymax", type=float)
+@click.option("-e", "--event_file", type=click.File(mode="r"))
+@click.argument("input_file", type=click.File(mode="r"), default="-")
 def main(
+    input_file,
     title=None,
     xmin=None,
     xmax=None,
@@ -109,7 +97,7 @@ def main(
     ymax=None,
     event_file=None,
 ):
-    data = sorted(line.split() for line in sys.stdin)
+    data = sorted(line.split() for line in input_file)
     dates = [datetime.strptime(d[0], "%Y-%m-%d").date() for d in data]
     values = [float(d[1]) for d in data]
 
@@ -140,8 +128,3 @@ def main(
     plt.title(title)
 
     plt.show()
-
-
-if __name__ == "__main__":
-    args = get_args()
-    main(**vars(args))
