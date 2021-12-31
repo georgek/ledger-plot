@@ -6,12 +6,12 @@ from bisect import bisect_left
 from datetime import datetime, date
 from dataclasses import dataclass
 from itertools import groupby
-from yaml import safe_load as load_yaml
 from typing import List
 
 import matplotlib.pyplot as plt
 from matplotlib import dates as mdates
 from matplotlib import ticker
+from yaml import safe_load as load_yaml
 
 
 @dataclass
@@ -64,7 +64,9 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
         shade = not shade
     # do last bit of shade
     if shade:
-        ax.fill_betweenx(values, sorted_events[-1].date, max(dates), color="grey", alpha=0.1)
+        ax.fill_betweenx(
+            values, sorted_events[-1].date, max(dates), color="grey", alpha=0.1
+        )
 
     min_value = min(values)
     max_value = max(values)
@@ -81,11 +83,7 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
 
         offset = -offset_amount
 
-        colours = {
-            "job": "blue",
-            "house": "green",
-            "misc": "red"
-        }
+        colours = {"job": "blue", "house": "green", "misc": "red"}
 
         for event in events:
             y = mid + offset
@@ -133,8 +131,8 @@ def main(
     ax.yaxis.set_major_locator(ticker.MultipleLocator(20000))
     ax.yaxis.set_minor_locator(ticker.MultipleLocator(2000))
 
-    ax.grid(which="major", alpha=.8)
-    ax.grid(which="minor", alpha=.3)
+    ax.grid(which="major", alpha=0.8)
+    ax.grid(which="minor", alpha=0.3)
 
     events = parse_events(event_file) if event_file else []
     add_event_grid(ax, dates, values, events)

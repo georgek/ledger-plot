@@ -10,8 +10,9 @@ setup(
     setup_requires=["setuptools_scm"],
     install_requires=[
         "matplotlib",
+        "PyYAML",
     ],
     scripts=[
-        "plot",
+        "ledger-plot",
     ],
 )
