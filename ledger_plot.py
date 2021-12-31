@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-
-import argparse
-import sys
 from bisect import bisect_left
 from datetime import datetime, date
 from dataclasses import dataclass
@@ -81,6 +77,7 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
 
 
 @click.command(help="Plot ledger data")
+@click.version_option()
 @click.option("-t", "--title")
 @click.option("--xmin", type=click.DateTime(formats=["%Y-%m-%d"]))
 @click.option("--xmax", type=click.DateTime(formats=["%Y-%m-%d"]))
