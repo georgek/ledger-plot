@@ -94,7 +94,7 @@ def main(
     ymax=None,
     event_file=None,
 ):
-    data = sorted(line.split() for line in input_file)
+    data = sorted((line.split() for line in input_file), key=lambda t: t[0])
     dates = [datetime.strptime(d[0], "%Y-%m-%d").date() for d in data]
     values = [float(d[1]) for d in data]
 
