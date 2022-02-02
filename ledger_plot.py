@@ -1,5 +1,5 @@
 from bisect import bisect_left
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from dataclasses import dataclass
 from itertools import groupby
 from typing import List
@@ -84,9 +84,13 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
 @click.option("--ymin", type=float)
 @click.option("--ymax", type=float)
 @click.option("-e", "--event_file", type=click.File(mode="r"))
+@click.option(
+    "--plot-type", type=click.Choice(["line", "bar", "scatter"]), default="line"
+)
 @click.argument("input_file", type=click.File(mode="r"), default="-")
 def main(
     input_file,
+    plot_type,
     title=None,
     xmin=None,
     xmax=None,
@@ -101,7 +105,13 @@ def main(
     plt.style.use("bmh")
 
     fig, ax = plt.subplots()
-    ax.step(dates, values, where="post")
+
+    if plot_type == "line":
+        ax.step(dates, values, where="post")
+    elif plot_type == "bar":
+        ax.bar(x=dates, height=values, width=timedelta(days=7))
+    elif plot_type == "scatter":
+        ax.scatter(dates, values)
 
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
