@@ -1,7 +1,33 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+requires = ["hatchling",
+"hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.setuptools_scm]
+[project]
+name = "ledger-plot"
+dynamic = ["version"]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.8"
+dependencies = [
+    "click",
+    "matplotlib",
+    "PyYAML",
+]
+
+[project.scripts]
+ledger-plot = "ledger_plot:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/ledger_plot",
+]
 
 [tool.pylsp-mypy]
 enabled = true
