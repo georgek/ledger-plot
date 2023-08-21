@@ -5,7 +5,7 @@ from itertools import groupby
 from typing import List
 
 import click
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # type: ignore
 from matplotlib import dates as mdates
 from matplotlib import ticker
 from yaml import safe_load as load_yaml
@@ -47,7 +47,7 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
     max_value = max(values)
     middle_value = (min_value + max_value) / 2
 
-    for group_date, events in event_groups:
+    for group_date, grouped_events in event_groups:
         value_at_date = date_to_value(dates, values, group_date)
         if value_at_date < middle_value:
             offset_amount = (max_value - min_value) * 0.15
@@ -60,7 +60,7 @@ def add_event_grid(ax, dates: List[date], values: List[float], events: List[Even
 
         colours = {"job": "blue", "house": "green", "misc": "red"}
 
-        for event in events:
+        for event in grouped_events:
             y = mid + offset
             colour = colours.get(event.type, "black")
             ax.text(
