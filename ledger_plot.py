@@ -1,3 +1,5 @@
+import logging
+
 from bisect import bisect_left
 from datetime import datetime, date, timedelta
 from dataclasses import dataclass
@@ -9,6 +11,8 @@ import matplotlib.pyplot as plt  # type: ignore
 from matplotlib import dates as mdates
 from matplotlib import ticker
 from yaml import safe_load as load_yaml
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
